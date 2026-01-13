@@ -61,6 +61,9 @@ set_property(GLOBAL APPEND PROPERTY robin-hood-hashing_install_command
 )
 set_property(GLOBAL APPEND PROPERTY robin-hood-hashing_cmake_extra -DRH_STANDALONE_PROJECT:BOOL=OFF)
 
+# ensure Volk generates an install target so ExternalProject can install it
+set_property(GLOBAL APPEND PROPERTY Volk_cmake_extra -DVOLK_INSTALL:BOOL=ON)
+
 # if SPIRV-Tools-opt is available as part of installed components enable Glslang to locate it
 if(VULKAN_SDK_COMPONENTS MATCHES "Glslang.*SPIRV-Tools|SPIRV-Tools.*Glslang")
   message("Glslang + SPIRV-Tools -- patching Glslang dependency on SPIRV-Tools-opt")
