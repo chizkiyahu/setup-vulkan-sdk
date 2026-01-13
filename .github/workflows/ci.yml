@@ -9,7 +9,7 @@ on:
         components:
           description: Vulkan SDK Components
           required: false
-          default: 'Vulkan-Headers Vulkan-Loader'
+          default: 'Vulkan-Headers Vulkan-Loader Khronos-Tools shaderc'
           # Vulkan-ValidationLayers robin-hood-hashing
         versions:
           description: Vulkan SDK Versions
