@@ -47,3 +47,9 @@ jobs:
           cmake -B tests/build -S tests -DCMAKE_BUILD_TYPE=Release -DCMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE=.
           cmake --build tests/build --config release
           ./tests/build/test_vulkan
+      - name: Upload Vulkan SDK artifact
+        if: success()
+        uses: actions/upload-artifact@v6
+        with:
+          name: vulkan-sdk-${{ matrix.runs-on }}-${{ matrix.version }}
+          path: ${{ env.VULKAN_SDK }}
