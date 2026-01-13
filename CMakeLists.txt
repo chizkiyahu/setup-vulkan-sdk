@@ -46,6 +46,10 @@ endif()
 # manually list SPIRV-Headers as SPIRV-Tools dependency
 set_property(GLOBAL APPEND PROPERTY SPIRV-Tools_deps_extra "SPIRV-Headers\;SPIRV-Headers_SOURCE_DIR")
 
+# fallback metadata for components that may be missing from newer config.json files
+set_property(GLOBAL PROPERTY robin-hood-hashing_fallback_url "https://github.com/martinus/robin-hood-hashing.git")
+set_property(GLOBAL PROPERTY robin-hood-hashing_fallback_ref "3.11.5")
+
 # manually list robin-hood-hashing as Vulkan-ValidationLayers dependency
 set_property(GLOBAL APPEND PROPERTY Vulkan-ValidationLayers_deps_extra "robin-hood-hashing\;ROBIN_HOOD_HASHING_INSTALL_DIR")
 
@@ -93,8 +97,21 @@ function(setup_component name parentName)
     endif()
     # message(">>>>>>>>>>>>>>>>>>>>>> ${name}_component_defined==${${name}_component_defined}")
     json_get_subprops("${configJson}" "repos" "${name}" PROPERTIES url dependencies)
+    if("${url}" MATCHES "-NOTFOUND|^$|^null$|^undefined$")
+      get_property(fallback_url GLOBAL PROPERTY "${name}_fallback_url")
+      if(NOT "${fallback_url}" MATCHES "-NOTFOUND|^$|^null$|^undefined$")
+        message(STATUS "using fallback url for ${name}: ${fallback_url}")
+        set(url "${fallback_url}")
+      endif()
+    endif()
     _assert(url "could not read URL for name=${name} url=${url}")
     json_coalesce_subprops("${configJson}" ref "repos" "${name}" PROPERTIES commit tag branch)
+    if("${ref}" MATCHES "-NOTFOUND|^$|^null$|^undefined$")
+      get_property(fallback_ref GLOBAL PROPERTY "${name}_fallback_ref")
+      if(NOT "${fallback_ref}" MATCHES "-NOTFOUND|^$|^null$|^undefined$")
+        set(ref "${fallback_ref}")
+      endif()
+    endif()
 
     # process config.json dependencies first
     json_foreach("${dependencies}" "" setup_component_dependency ${name})
