@@ -9,7 +9,7 @@ on:
         components:
           description: Vulkan SDK Components
           required: false
-          default: 'Vulkan-Headers Vulkan-Loader SPIRV-Headers SPIRV-Cross SPIRV-Tools SPIRV-Reflect Glslang'
+          default: 'Vulkan-Headers Vulkan-Loader'
           # Vulkan-ValidationLayers robin-hood-hashing
         versions:
           description: Vulkan SDK Versions
@@ -43,7 +43,6 @@ jobs:
         run: |
           echo "Vulkan SDK Version=='$VULKAN_SDK_VERSION'"
           echo "VULKAN_SDK=='$VULKAN_SDK'"
-          glslangValidator --version
           test -n "$VULKAN_SDK_VERSION"
           cmake -B tests/build -S tests -DCMAKE_BUILD_TYPE=Release -DCMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE=.
           cmake --build tests/build --config release
